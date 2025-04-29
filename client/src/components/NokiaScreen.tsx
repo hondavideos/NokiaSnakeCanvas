@@ -29,10 +29,10 @@ const NokiaScreen: React.FC = () => {
         e.preventDefault();
         setShowDebug(prev => !prev);
         
-        // Apply debug class to the game viewport when debug mode is toggled
-        const gameViewport = document.querySelector('.game-viewport');
-        if (gameViewport) {
-          gameViewport.classList.toggle('debug-overlay');
+        // Apply debug class to the game canvas when debug mode is toggled
+        const gameCanvas = document.querySelector('.game-canvas');
+        if (gameCanvas) {
+          gameCanvas.classList.toggle('debug-overlay');
         }
       }
     };

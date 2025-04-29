@@ -21,21 +21,21 @@ function App() {
           <p>Loading Snake Game...</p>
         </div>
       ) : (
-        <div className="nokia-container" style={{
+        <div className="phone-container" style={{
           background: `url('/images/nokia-frame.png') center/contain no-repeat`,
           position: 'relative',
           width: '800px',
-          height: '800px',
+          height: '600px',
           pointerEvents: 'none', // Per requirements
         }}>
           {/* Game viewport with exact positioning */}
-          <div className="game-viewport" style={{
+          <div className="game-canvas" style={{
             position: 'absolute',
-            top: '23.5%',     // Vertical position - adjusted to match the phone's screen
-            left: '50%',      // Horizontal center
+            top: '29.7%',      // Precise vertical position per requirements
+            left: '50.05%',    // Precise horizontal center per requirements
             transform: 'translate(-50%, -50%)',
-            width: '58%',     // Screen width
-            height: '27%',    // Screen height - adjusted to maintain aspect ratio
+            width: '33.2%',    // Exact screen width per requirements
+            aspectRatio: '7/4', // Nokia 3310 screen aspect ratio (84x48)
             overflow: 'hidden',
             pointerEvents: 'auto', // Enable interaction within the game area
           }}>

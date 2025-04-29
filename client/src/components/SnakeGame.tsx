@@ -361,8 +361,10 @@ const SnakeGame: React.FC<SnakeGameProps> = ({
         height={canvasHeight * renderScale}
         className="snake-game-canvas"
         style={{ 
-          maxWidth: '464px', 
-          maxHeight: '304px'
+          maxWidth: '672px', 
+          maxHeight: '384px',
+          transform: 'scale(0.82)',
+          transformOrigin: 'top left',
         }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
