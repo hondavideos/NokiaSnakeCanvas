@@ -64,8 +64,9 @@ export const useSnakeGame = create<SnakeGameState>((set, get) => ({
   
   startGame: () => {
     // Clear any existing interval
-    if (get().gameInterval) {
-      clearInterval(get().gameInterval);
+    const interval = get().gameInterval;
+    if (interval !== null) {
+      clearInterval(interval);
     }
     
     // Initial snake position (middle of screen)
@@ -108,8 +109,9 @@ export const useSnakeGame = create<SnakeGameState>((set, get) => ({
   
   resetGame: () => {
     // Clear the interval
-    if (get().gameInterval) {
-      clearInterval(get().gameInterval);
+    const interval = get().gameInterval;
+    if (interval !== null) {
+      clearInterval(interval);
     }
     
     // Update high score if needed
@@ -151,37 +153,27 @@ export const useSnakeGame = create<SnakeGameState>((set, get) => ({
     // Use the nextDirection as the current direction for this move
     set({ direction: nextDirection });
     
-    // Calculate new head position
+    // Calculate new head position with immediate wrapping
     const head = { ...snake[0] };
     
-    // Immediate screen-wrapping without delay
+    // Force immediate wrapping with modulo operation (more reliable)
     switch (nextDirection) {
       case 'up':
-        head.y = head.y - 1;
-        // Wrap around if the head goes off screen
-        if (head.y < 0) {
-          head.y = gridHeight - 1; // Appear immediately at the bottom
-        }
+        head.y = (head.y - 1 + gridHeight) % gridHeight;
         break;
       case 'down':
-        head.y = head.y + 1;
-        if (head.y >= gridHeight) {
-          head.y = 0; // Appear immediately at the top
-        }
+        head.y = (head.y + 1) % gridHeight;
         break;
       case 'left':
-        head.x = head.x - 1;
-        if (head.x < 0) {
-          head.x = gridWidth - 1; // Appear immediately at the right
-        }
+        head.x = (head.x - 1 + gridWidth) % gridWidth;
         break;
       case 'right':
-        head.x = head.x + 1;
-        if (head.x >= gridWidth) {
-          head.x = 0; // Appear immediately at the left
-        }
+        head.x = (head.x + 1) % gridWidth;
         break;
     }
+    
+    // Log the new head position for debugging
+    console.log("New head position:", head.x, head.y);
     
     // Check for collision with self
     if (get().checkCollision()) {
@@ -238,12 +230,37 @@ export const useSnakeGame = create<SnakeGameState>((set, get) => ({
     const { gridWidth, gridHeight, snake } = get();
     // Make sure we have a valid snake before generating food
     if (snake.length > 0) {
-      const newFood = generateRandomPosition(gridWidth, gridHeight, snake);
+      // For better visibility, randomly select food from a small set of fixed positions
+      // This ensures the food is always visible on the screen
+      const visiblePositions = [
+        { x: 20, y: 20 },
+        { x: 40, y: 20 },
+        { x: 60, y: 20 },
+        { x: 20, y: 30 },
+        { x: 40, y: 30 },
+        { x: 60, y: 30 }
+      ];
+      
+      // Filter out positions that collide with snake
+      const availablePositions = visiblePositions.filter(pos => {
+        return !snake.some(segment => segment.x === pos.x && segment.y === pos.y);
+      });
+      
+      let newFood;
+      if (availablePositions.length > 0) {
+        // If we have available preset positions, use one of them
+        const randomIndex = Math.floor(Math.random() * availablePositions.length);
+        newFood = availablePositions[randomIndex];
+      } else {
+        // Fallback to completely random position
+        newFood = generateRandomPosition(gridWidth, gridHeight, snake);
+      }
+      
       console.log("Generated new food at:", newFood);
       set({ food: newFood });
     } else {
-      // If no snake (game not started), place food at a default position
-      const defaultFood = { x: 60, y: 24 };
+      // If no snake (game not started), place food at a clearly visible position
+      const defaultFood = { x: 40, y: 24 };
       console.log("Set default food at:", defaultFood);
       set({ food: defaultFood });
     }

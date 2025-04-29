@@ -110,23 +110,24 @@ const SnakeGame: React.FC<SnakeGameProps> = ({
       
       // Check if food is within bounds
       if (foodX >= 0 && foodX < canvasWidth && foodY >= 0 && foodY < canvasHeight) {
-        // Make food visually distinct
-        ctx.fillStyle = '#000000'; // Black for better contrast
+        // Make food much more visible with high contrast
         
-        // Draw a standard size food dot
-        const foodSize = pixelSize * renderScale;
-        const foodPixelX = foodX * pixelSize * renderScale;
-        const foodPixelY = foodY * pixelSize * renderScale;
+        // Make food larger than snake for better visibility (3x3)
+        const foodSize = pixelSize * renderScale * 3;
+        const foodPixelX = (foodX * pixelSize * renderScale) - (pixelSize * renderScale);
+        const foodPixelY = (foodY * pixelSize * renderScale) - (pixelSize * renderScale);
         
-        // Draw a filled square with a distinctive pattern
+        // Draw an "apple" style food (red with stem)
+        // Fill with red
+        ctx.fillStyle = '#000000'; // Much darker color for visibility
         ctx.fillRect(foodPixelX, foodPixelY, foodSize, foodSize);
         
-        // Add a contrasting border
-        ctx.strokeStyle = '#c7f0d8'; // LCD background color
-        ctx.lineWidth = 1;
+        // Add thick white border for contrast
+        ctx.strokeStyle = '#FFFFFF';
+        ctx.lineWidth = 2;
         ctx.strokeRect(foodPixelX, foodPixelY, foodSize, foodSize);
         
-        // Draw an X inside for extra visibility
+        // Add diagonal lines for added visibility
         ctx.beginPath();
         ctx.moveTo(foodPixelX, foodPixelY);
         ctx.lineTo(foodPixelX + foodSize, foodPixelY + foodSize);
