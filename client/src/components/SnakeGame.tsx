@@ -84,32 +84,60 @@ const SnakeGame: React.FC<SnakeGameProps> = ({
     const drawSnake = () => {
       ctx.fillStyle = '#32383e'; // Nokia LCD foreground color
       
+      // Make sure we're using integers for positioning to avoid gaps
       snake.forEach(segment => {
-        ctx.fillRect(
-          segment.x * pixelSize * renderScale, 
-          segment.y * pixelSize * renderScale, 
-          pixelSize * renderScale, 
-          pixelSize * renderScale
-        );
+        // Make sure the segment is within the visible bounds
+        const x = Math.floor(segment.x);
+        const y = Math.floor(segment.y);
+        
+        // Use strict bounds checking for rendering
+        if (x >= 0 && x < canvasWidth && y >= 0 && y < canvasHeight) {
+          ctx.fillRect(
+            x * pixelSize * renderScale, 
+            y * pixelSize * renderScale, 
+            pixelSize * renderScale, 
+            pixelSize * renderScale
+          );
+        }
       });
     };
     
     // Draw the food
     const drawFood = () => {
-      // Make food clearly visible but same size as snake segments
-      ctx.fillStyle = '#000000'; // Black - even darker than standard Nokia LCD color
+      // Make sure food coordinates are integers
+      const foodX = Math.floor(food.x);
+      const foodY = Math.floor(food.y);
       
-      // Draw food same size as snake segments (1x1 pixels)
-      const foodSize = pixelSize * renderScale;
-      
-      ctx.fillRect(
-        food.x * pixelSize * renderScale,
-        food.y * pixelSize * renderScale,
-        foodSize,
-        foodSize
-      );
-      
-      console.log("Drawing food at pixel:", food.x, food.y);
+      // Check if food is within bounds
+      if (foodX >= 0 && foodX < canvasWidth && foodY >= 0 && foodY < canvasHeight) {
+        // Make food visually distinct
+        ctx.fillStyle = '#000000'; // Black for better contrast
+        
+        // Draw a standard size food dot
+        const foodSize = pixelSize * renderScale;
+        const foodPixelX = foodX * pixelSize * renderScale;
+        const foodPixelY = foodY * pixelSize * renderScale;
+        
+        // Draw a filled square with a distinctive pattern
+        ctx.fillRect(foodPixelX, foodPixelY, foodSize, foodSize);
+        
+        // Add a contrasting border
+        ctx.strokeStyle = '#c7f0d8'; // LCD background color
+        ctx.lineWidth = 1;
+        ctx.strokeRect(foodPixelX, foodPixelY, foodSize, foodSize);
+        
+        // Draw an X inside for extra visibility
+        ctx.beginPath();
+        ctx.moveTo(foodPixelX, foodPixelY);
+        ctx.lineTo(foodPixelX + foodSize, foodPixelY + foodSize);
+        ctx.moveTo(foodPixelX + foodSize, foodPixelY);
+        ctx.lineTo(foodPixelX, foodPixelY + foodSize);
+        ctx.stroke();
+        
+        console.log("Drawing food at pixel:", foodX, foodY);
+      } else {
+        console.log("Food out of bounds:", food);
+      }
     };
     
     // Draw score
