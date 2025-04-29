@@ -28,6 +28,12 @@ const NokiaScreen: React.FC = () => {
       if (e.ctrlKey && e.shiftKey && e.code === 'KeyD') {
         e.preventDefault();
         setShowDebug(prev => !prev);
+        
+        // Apply debug class to the game viewport when debug mode is toggled
+        const gameViewport = document.querySelector('.game-viewport');
+        if (gameViewport) {
+          gameViewport.classList.toggle('debug-overlay');
+        }
       }
     };
     
@@ -41,24 +47,6 @@ const NokiaScreen: React.FC = () => {
 
   return (
     <div className="nokia-phone-container">
-      {/* SVG Background with the Nokia phone */}
-      <div className="nokia-phone-background">
-        <svg 
-          viewBox="0 0 800 800" 
-          className="nokia-svg"
-          aria-hidden="true"
-        >
-          <rect x="0" y="0" width="800" height="800" fill="transparent" />
-          <image 
-            href="/nokia-moss.svg" 
-            x="0" 
-            y="0" 
-            width="800" 
-            height="800" 
-          />
-        </svg>
-      </div>
-      
       {/* Screen container that holds the game */}
       <div 
         ref={containerRef}
