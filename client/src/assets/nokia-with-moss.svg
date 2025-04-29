@@ -1,0 +1,57 @@
+<svg width="800" height="800" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- This is a placeholder svg that represents the Nokia phone with moss from the image -->
+  <!-- In a real implementation, we'd use an optimized SVG of the actual phone -->
+  <!-- Nokia phone outline -->
+  <g id="nokia-phone" transform="translate(250, 155) scale(0.6)">
+    <rect x="0" y="0" width="500" height="840" rx="30" fill="#2C4C3B" />
+    
+    <!-- Screen area -->
+    <rect x="60" y="60" width="380" height="220" rx="5" fill="#c7f0d8" />
+    
+    <!-- Nokia logo -->
+    <text x="250" y="330" font-family="Arial" font-size="24" fill="white" text-anchor="middle">NOKIA</text>
+    
+    <!-- Speaker holes -->
+    <circle cx="220" cy="370" r="4" fill="#111" />
+    <circle cx="240" cy="370" r="4" fill="#111" />
+    <circle cx="260" cy="370" r="4" fill="#111" />
+    <circle cx="280" cy="370" r="4" fill="#111" />
+    
+    <!-- Keypad -->
+    <circle cx="180" cy="430" r="25" fill="#ccc" />
+    <circle cx="320" cy="430" r="25" fill="#ccc" />
+    
+    <circle cx="180" cy="500" r="25" fill="#ccc" />
+    <circle cx="250" cy="500" r="25" fill="#ccc" />
+    <circle cx="320" cy="500" r="25" fill="#ccc" />
+    
+    <circle cx="180" cy="570" r="25" fill="#ccc" />
+    <circle cx="250" cy="570" r="25" fill="#ccc" />
+    <circle cx="320" cy="570" r="25" fill="#ccc" />
+    
+    <circle cx="180" cy="640" r="25" fill="#ccc" />
+    <circle cx="250" cy="640" r="25" fill="#ccc" />
+    <circle cx="320" cy="640" r="25" fill="#ccc" />
+    
+    <circle cx="250" cy="710" r="25" fill="#ccc" />
+  </g>
+  
+  <!-- Moss overlay -->
+  <g id="moss">
+    <path d="M250 155 C270 140, 300 170, 320 160 C340 150, 350 170, 380 160 C410 150, 440 180, 470 170" fill="none" stroke="#7fbd42" stroke-width="10" />
+    <path d="M320 160 C350 140, 380 160, 400 150 C420 140, 440 160, 460 150" fill="none" stroke="#7fbd42" stroke-width="8" />
+    <path d="M280 155 C300 140, 320 150, 340 140 C360 130, 380 150, 400 140" fill="none" stroke="#7fbd42" stroke-width="6" />
+    
+    <ellipse cx="290" cy="165" rx="40" ry="10" fill="#7fbd42" />
+    <ellipse cx="350" cy="160" rx="35" ry="8" fill="#7fbd42" />
+    <ellipse cx="410" cy="170" rx="45" ry="12" fill="#7fbd42" />
+    <ellipse cx="470" cy="165" rx="30" ry="7" fill="#7fbd42" />
+    
+    <ellipse cx="450" cy="650" rx="50" ry="15" fill="#7fbd42" />
+    <ellipse cx="350" cy="680" rx="40" ry="10" fill="#7fbd42" />
+    <ellipse cx="270" cy="660" rx="45" ry="12" fill="#7fbd42" />
+  </g>
+  
+  <!-- Forest background hints -->
+  <rect x="0" y="0" width="800" height="800" fill="rgba(12, 36, 24, 0.2)" />
+</svg>

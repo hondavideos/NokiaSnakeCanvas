@@ -1,0 +1,185 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+    background-color: #2a3b30;
+  }
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+}
+
+/* App container */
+.app-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #2a3b30;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Loading screen */
+.loading {
+  color: white;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+/* Nokia phone container */
+.nokia-phone-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* SVG Background image */
+.nokia-phone-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+}
+
+.nokia-svg {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* Screen container positioning */
+.nokia-screen-container {
+  position: absolute;
+  width: 380px;  /* Measured from SVG */
+  height: 220px; /* Measured from SVG */
+  top: 23.5%;    /* Positioning to match the screen area */
+  left: 50.2%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Debug overlay */
+.nokia-screen-container.debug-overlay {
+  border: 1px solid red;
+}
+
+/* Debug info panel */
+.debug-info {
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 5px;
+  font-size: 10px;
+  border-radius: 3px;
+  z-index: 10;
+}
+
+/* Snake game container */
+.snake-game-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Canvas for the game */
+.snake-game-canvas {
+  max-width: 100%;
+  max-height: 100%;
+  transform: scale(0.82); /* Scaling to match display size */
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* Touch controls */
+.touch-controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 3;
+  opacity: 0.6;
+}
+
+.touch-controls-middle {
+  display: flex;
+  justify-content: space-between;
+  width: 100px;
+}
+
+.touch-control {
+  width: 40px;
+  height: 40px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: 1px solid #333;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 5px;
+  font-size: 1.5rem;
+  line-height: 1;
+  padding: 0;
+  touch-action: manipulation;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .nokia-screen-container {
+    width: 300px;
+    height: 180px;
+  }
+}
+
+@media (max-width: 480px) {
+  .nokia-screen-container {
+    width: 250px;
+    height: 150px;
+  }
+  
+  .touch-control {
+    width: 30px;
+    height: 30px;
+    font-size: 1.2rem;
+  }
+  
+  .touch-controls-middle {
+    width: 80px;
+  }
+}
