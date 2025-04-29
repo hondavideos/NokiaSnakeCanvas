@@ -36,7 +36,7 @@ const SnakeGame: React.FC<SnakeGameProps> = ({
   // Audio initialization
   const { hitSound, setHitSound, playHit, toggleMute, isMuted } = useAudio();
   
-  // Initialize sounds
+  // Initialize sounds and game elements
   useEffect(() => {
     if (!hitSound) {
       // For collecting food
@@ -52,7 +52,14 @@ const SnakeGame: React.FC<SnakeGameProps> = ({
     };
     
     detectTouch();
-  }, [hitSound, setHitSound]);
+    
+    // Make sure we have food on the screen even before the game starts
+    // This ensures there's always food visible
+    if (food.x === 0 && food.y === 0) {
+      const { generateFood } = useSnakeGame.getState();
+      generateFood();
+    }
+  }, [hitSound, setHitSound, food]);
 
   // Set up the rendering
   useEffect(() => {

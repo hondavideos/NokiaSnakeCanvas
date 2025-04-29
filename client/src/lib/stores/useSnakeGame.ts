@@ -16,7 +16,7 @@ interface SnakeGameState {
   highScore: number;
   gameOver: boolean;
   isPaused: boolean;
-  gameInterval: number | null;
+  gameInterval: ReturnType<typeof setInterval> | null;
   gridWidth: number;
   gridHeight: number;
   
@@ -222,8 +222,17 @@ export const useSnakeGame = create<SnakeGameState>((set, get) => ({
   
   generateFood: () => {
     const { gridWidth, gridHeight, snake } = get();
-    const newFood = generateRandomPosition(gridWidth, gridHeight, snake);
-    set({ food: newFood });
+    // Make sure we have a valid snake before generating food
+    if (snake.length > 0) {
+      const newFood = generateRandomPosition(gridWidth, gridHeight, snake);
+      console.log("Generated new food at:", newFood);
+      set({ food: newFood });
+    } else {
+      // If no snake (game not started), place food at a default position
+      const defaultFood = { x: 60, y: 24 };
+      console.log("Set default food at:", defaultFood);
+      set({ food: defaultFood });
+    }
   },
   
   increaseSpeed: () => {
