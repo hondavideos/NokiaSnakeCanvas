@@ -96,13 +96,20 @@ const SnakeGame: React.FC<SnakeGameProps> = ({
     
     // Draw the food
     const drawFood = () => {
-      ctx.fillStyle = '#32383e'; // Nokia LCD foreground color
+      // Make food clearly visible (2x2 pixels)
+      ctx.fillStyle = '#000000'; // Black - even darker than standard Nokia LCD color
+      
+      // Draw food slightly larger (2x2 pixels) for better visibility
+      const foodSize = pixelSize * renderScale * 2;
+      
       ctx.fillRect(
-        food.x * pixelSize * renderScale,
-        food.y * pixelSize * renderScale,
-        pixelSize * renderScale,
-        pixelSize * renderScale
+        food.x * pixelSize * renderScale - foodSize/4,
+        food.y * pixelSize * renderScale - foodSize/4,
+        foodSize,
+        foodSize
       );
+      
+      console.log("Drawing food at pixel:", food.x, food.y);
     };
     
     // Draw score
@@ -221,6 +228,9 @@ const SnakeGame: React.FC<SnakeGameProps> = ({
       if (snake.length === 0) {
         // Show start screen
         drawStartScreen();
+        
+        // Always show food on start screen for visibility
+        drawFood();
       } else if (gameOver) {
         // Game over screen
         drawSnake();

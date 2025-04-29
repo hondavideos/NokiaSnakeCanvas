@@ -31,10 +31,10 @@ function App() {
           {/* Game viewport with exact positioning */}
           <div className="game-canvas" style={{
             position: 'absolute',
-            top: '29.8%',      // Adjusted based on image with red lines
+            top: '39.8%',      // Moved down 10% per request
             left: '50.05%',    // Horizontal center
             transform: 'translate(-50%, -50%)',
-            width: '27.5%',    // Reduced width to match red lines (was 33.2%)
+            width: '27.5%',    // Width adjusted to match red lines
             aspectRatio: '7/4', // Nokia 3310 screen aspect ratio (84x48)
             overflow: 'hidden',
             pointerEvents: 'auto', // Enable interaction within the game area
