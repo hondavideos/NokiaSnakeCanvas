@@ -102,43 +102,37 @@ const SnakeGame: React.FC<SnakeGameProps> = ({
       });
     };
     
-    // Draw the food
+    // Draw the food - with GUARANTEED visibility in a fixed spot
     const drawFood = () => {
-      // Make sure food coordinates are integers
-      const foodX = Math.floor(food.x);
-      const foodY = Math.floor(food.y);
+      // Use fixed position in center of the screen
+      const foodX = Math.floor(canvasWidth/2);
+      const foodY = Math.floor(canvasHeight/2);
       
-      // Check if food is within bounds
-      if (foodX >= 0 && foodX < canvasWidth && foodY >= 0 && foodY < canvasHeight) {
-        // Make food much more visible with high contrast
-        
-        // Make food larger than snake for better visibility (3x3)
-        const foodSize = pixelSize * renderScale * 3;
-        const foodPixelX = (foodX * pixelSize * renderScale) - (pixelSize * renderScale);
-        const foodPixelY = (foodY * pixelSize * renderScale) - (pixelSize * renderScale);
-        
-        // Draw an "apple" style food (red with stem)
-        // Fill with red
-        ctx.fillStyle = '#000000'; // Much darker color for visibility
-        ctx.fillRect(foodPixelX, foodPixelY, foodSize, foodSize);
-        
-        // Add thick white border for contrast
-        ctx.strokeStyle = '#FFFFFF';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(foodPixelX, foodPixelY, foodSize, foodSize);
-        
-        // Add diagonal lines for added visibility
-        ctx.beginPath();
-        ctx.moveTo(foodPixelX, foodPixelY);
-        ctx.lineTo(foodPixelX + foodSize, foodPixelY + foodSize);
-        ctx.moveTo(foodPixelX + foodSize, foodPixelY);
-        ctx.lineTo(foodPixelX, foodPixelY + foodSize);
-        ctx.stroke();
-        
-        console.log("Drawing food at pixel:", foodX, foodY);
-      } else {
-        console.log("Food out of bounds:", food);
-      }
+      // Calculate pixel coordinates
+      const foodPixelX = foodX * pixelSize * renderScale;
+      const foodPixelY = foodY * pixelSize * renderScale;
+      const foodSize = pixelSize * renderScale * 4; // Make it larger (4x4 pixels)
+      
+      // Draw solid black square
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(foodPixelX, foodPixelY, foodSize, foodSize);
+      
+      // Draw a white X over the black square for maximum visibility
+      ctx.strokeStyle = '#FFFFFF';
+      ctx.lineWidth = 2;
+      
+      // Draw outer box
+      ctx.strokeRect(foodPixelX, foodPixelY, foodSize, foodSize);
+      
+      // Draw X pattern
+      ctx.beginPath();
+      ctx.moveTo(foodPixelX, foodPixelY);
+      ctx.lineTo(foodPixelX + foodSize, foodPixelY + foodSize);
+      ctx.moveTo(foodPixelX + foodSize, foodPixelY);
+      ctx.lineTo(foodPixelX, foodPixelY + foodSize);
+      ctx.stroke();
+      
+      console.log("Drawing food at FIXED position:", foodX, foodY);
     };
     
     // Draw score

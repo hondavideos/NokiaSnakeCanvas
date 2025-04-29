@@ -271,8 +271,9 @@ export const useSnakeGame = create<SnakeGameState>((set, get) => ({
     
     if (speed > 50) {
       // Clear existing interval
-      if (gameInterval) {
-        clearInterval(gameInterval);
+      const interval = gameInterval;
+      if (interval !== null) {
+        clearInterval(interval);
       }
       
       // Calculate new speed (10% faster)
