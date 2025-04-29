@@ -154,18 +154,32 @@ export const useSnakeGame = create<SnakeGameState>((set, get) => ({
     // Calculate new head position
     const head = { ...snake[0] };
     
+    // Immediate screen-wrapping without delay
     switch (nextDirection) {
       case 'up':
-        head.y = (head.y - 1 + gridHeight) % gridHeight;
+        head.y = head.y - 1;
+        // Wrap around if the head goes off screen
+        if (head.y < 0) {
+          head.y = gridHeight - 1; // Appear immediately at the bottom
+        }
         break;
       case 'down':
-        head.y = (head.y + 1) % gridHeight;
+        head.y = head.y + 1;
+        if (head.y >= gridHeight) {
+          head.y = 0; // Appear immediately at the top
+        }
         break;
       case 'left':
-        head.x = (head.x - 1 + gridWidth) % gridWidth;
+        head.x = head.x - 1;
+        if (head.x < 0) {
+          head.x = gridWidth - 1; // Appear immediately at the right
+        }
         break;
       case 'right':
-        head.x = (head.x + 1) % gridWidth;
+        head.x = head.x + 1;
+        if (head.x >= gridWidth) {
+          head.x = 0; // Appear immediately at the left
+        }
         break;
     }
     

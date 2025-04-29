@@ -96,15 +96,15 @@ const SnakeGame: React.FC<SnakeGameProps> = ({
     
     // Draw the food
     const drawFood = () => {
-      // Make food clearly visible (2x2 pixels)
+      // Make food clearly visible but same size as snake segments
       ctx.fillStyle = '#000000'; // Black - even darker than standard Nokia LCD color
       
-      // Draw food slightly larger (2x2 pixels) for better visibility
-      const foodSize = pixelSize * renderScale * 2;
+      // Draw food same size as snake segments (1x1 pixels)
+      const foodSize = pixelSize * renderScale;
       
       ctx.fillRect(
-        food.x * pixelSize * renderScale - foodSize/4,
-        food.y * pixelSize * renderScale - foodSize/4,
+        food.x * pixelSize * renderScale,
+        food.y * pixelSize * renderScale,
         foodSize,
         foodSize
       );
