@@ -75,12 +75,14 @@ export const useSnakeGame = create<SnakeGameState>((set, get) => ({
       { x: 40, y: 24 },
     ];
     
-    // Generate initial food
+    // Generate initial food - at random position that's not on the snake
     const initialFood = generateRandomPosition(
       get().gridWidth,
       get().gridHeight,
       initialSnake
     );
+    
+    console.log("Game started with food at:", initialFood);
     
     // Set initial state
     set({

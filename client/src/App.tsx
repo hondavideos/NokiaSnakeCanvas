@@ -31,10 +31,10 @@ function App() {
           {/* Game viewport with exact positioning */}
           <div className="game-canvas" style={{
             position: 'absolute',
-            top: '29.7%',      // Precise vertical position per requirements
-            left: '50.05%',    // Precise horizontal center per requirements
+            top: '29.8%',      // Adjusted based on image with red lines
+            left: '50.05%',    // Horizontal center
             transform: 'translate(-50%, -50%)',
-            width: '33.2%',    // Exact screen width per requirements
+            width: '27.5%',    // Reduced width to match red lines (was 33.2%)
             aspectRatio: '7/4', // Nokia 3310 screen aspect ratio (84x48)
             overflow: 'hidden',
             pointerEvents: 'auto', // Enable interaction within the game area
