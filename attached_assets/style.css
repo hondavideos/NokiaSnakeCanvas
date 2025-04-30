@@ -1,0 +1,36 @@
+.grid {
+    width: 200px;
+    height: 200px;
+    display: flex;
+    flex-wrap: wrap;
+    border: #f4f4f4 solid 8px ;
+    background-color: rgb(16, 4, 27);
+    margin:8% 45%;
+}
+  
+  .grid div {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .snake {
+    background-color: blue;
+  }
+  
+  .apple {
+    background-color: red;
+  }
+
+  body{
+      background-color: #46dd32;  
+      background-image: url('snake\ image.gif');
+  }
+
+  .start {
+    padding: 10px 20px ; 
+    font: 0.9em sans-serif;
+    background-color: rgb(36, 36, 36);
+    color: #f4f4f4;
+    border-radius: 5px;
+    float: right;
+  }
