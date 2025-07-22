@@ -34,7 +34,7 @@ function App() {
             top: '39.8%',      // Moved down 10% per request
             left: '50.05%',    // Horizontal center
             transform: 'translate(-50%, -50%)',
-            width: '27.5%',    // Width adjusted to match red lines
+            width: '19.5%',    // Reduced by 30% (27.5% * 0.7 = 19.25%, rounded to 19.5%)
             aspectRatio: '7/4', // Nokia 3310 screen aspect ratio (84x48)
             overflow: 'hidden',
             pointerEvents: 'auto', // Enable interaction within the game area
