@@ -16,7 +16,9 @@ const NokiaScreen: React.FC = () => {
           height: offsetHeight
         });
         
-        console.log('Nokia screen dimensions:', offsetWidth, 'x', offsetHeight);
+        console.log('🔍 Nokia screen container dimensions:', offsetWidth, 'x', offsetHeight);
+        console.log('🔍 Expected grid: 28×16 pixels');
+        console.log('🔍 Container aspect ratio:', (offsetWidth / offsetHeight).toFixed(3), '(expected: 1.75 for 7:4)');
       }
     };
 
@@ -56,16 +58,17 @@ const NokiaScreen: React.FC = () => {
         )}
       >
         <SnakeGame 
-          canvasWidth={84} 
-          canvasHeight={48} 
-          renderScale={8} 
+          canvasWidth={28} 
+          canvasHeight={16} 
+          containerWidth={dimensions.width}
+          containerHeight={dimensions.height}
           showDebug={showDebug}
         />
         
         {showDebug && (
           <div className="debug-info">
             <p>Screen: {dimensions.width}×{dimensions.height}px</p>
-            <p>Game Grid: 84×48px</p>
+            <p>Game Grid: 28×16px</p>
             <p>Press Ctrl+Shift+D to toggle debug</p>
           </div>
         )}

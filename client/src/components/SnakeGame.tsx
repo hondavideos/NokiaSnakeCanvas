@@ -5,19 +5,35 @@ import { useAudio } from '../lib/stores/useAudio';
 interface SnakeGameProps {
   canvasWidth: number;
   canvasHeight: number;
-  renderScale: number;
+  containerWidth: number;
+  containerHeight: number;
   showDebug?: boolean;
 }
 
 const SnakeGame: React.FC<SnakeGameProps> = ({ 
   canvasWidth, 
   canvasHeight, 
-  renderScale,
+  containerWidth,
+  containerHeight,
   showDebug = false
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [initialTouch, setInitialTouch] = useState<{ x: number, y: number } | null>(null);
+  
+  // Target native Nokia 3310 screen size: 672×384px (28×16 at 24px per cell)
+  const targetCanvasWidth = 672;  // 28 * 24
+  const targetCanvasHeight = 384; // 16 * 24
+  
+  // Calculate renderScale to achieve target size with integer scaling
+  const renderScale = Math.floor(Math.min(
+    targetCanvasWidth / canvasWidth,
+    targetCanvasHeight / canvasHeight
+  ));
+  
+  // Calculate actual canvas dimensions (targeting 672×384)
+  const actualCanvasWidth = canvasWidth * renderScale;
+  const actualCanvasHeight = canvasHeight * renderScale;
   
   // Get snake game state and methods from our store
   const {
@@ -66,6 +82,19 @@ const SnakeGame: React.FC<SnakeGameProps> = ({
     const canvas = canvasRef.current;
     if (!canvas) return;
     
+    // Set canvas dimensions to match calculated size
+    canvas.width = actualCanvasWidth;
+    canvas.height = actualCanvasHeight;
+    
+    console.log('🎮 Canvas Setup:');
+    console.log('  Container size:', containerWidth, 'x', containerHeight);
+    console.log('  Grid size:', canvasWidth, 'x', canvasHeight);
+    console.log('  Target size: 672×384px');
+    console.log('  Calculated renderScale:', renderScale);
+    console.log('  Actual canvas size:', actualCanvasWidth, 'x', actualCanvasHeight);
+    console.log('  Canvas element size:', canvas.offsetWidth, 'x', canvas.offsetHeight);
+    console.debug(`Final canvas: ${actualCanvasWidth}×${actualCanvasHeight}px`);
+    
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     
@@ -87,19 +116,16 @@ const SnakeGame: React.FC<SnakeGameProps> = ({
       
       // Make sure we're using integers for positioning to avoid gaps
       snake.forEach(segment => {
-        // Make sure the segment is within the visible bounds
         const x = Math.floor(segment.x);
         const y = Math.floor(segment.y);
         
-        // Use strict bounds checking for rendering
-        if (x >= 0 && x < canvasWidth && y >= 0 && y < canvasHeight) {
-          ctx.fillRect(
-            x * CELL_SIZE * renderScale, 
-            y * CELL_SIZE * renderScale, 
-            CELL_SIZE * renderScale, 
-            CELL_SIZE * renderScale
-          );
-        }
+        // Render all segments (wrap-around logic ensures they're always in bounds)
+        ctx.fillRect(
+          x * CELL_SIZE * renderScale, 
+          y * CELL_SIZE * renderScale, 
+          CELL_SIZE * renderScale, 
+          CELL_SIZE * renderScale
+        );
       });
     };
     
@@ -137,19 +163,19 @@ const SnakeGame: React.FC<SnakeGameProps> = ({
       ctx.textAlign = 'center';
       ctx.fillText(
         'GAME OVER', 
-        canvas.width / 2, 
-        canvas.height / 2 - renderScale * 2
+        actualCanvasWidth / 2, 
+        actualCanvasHeight / 2 - renderScale * 2
       );
       ctx.fillText(
         `SCORE: ${score}`, 
-        canvas.width / 2, 
-        canvas.height / 2 + renderScale * 3
+        actualCanvasWidth / 2, 
+        actualCanvasHeight / 2 + renderScale * 3
       );
       ctx.font = `${Math.floor(renderScale * 2)}px monospace`;
       ctx.fillText(
         'PRESS SPACE', 
-        canvas.width / 2, 
-        canvas.height / 2 + renderScale * 8
+        actualCanvasWidth / 2, 
+        actualCanvasHeight / 2 + renderScale * 8
       );
     };
     
@@ -160,8 +186,8 @@ const SnakeGame: React.FC<SnakeGameProps> = ({
       ctx.textAlign = 'center';
       ctx.fillText(
         'PAUSED', 
-        canvas.width / 2, 
-        canvas.height / 2
+        actualCanvasWidth / 2, 
+        actualCanvasHeight / 2
       );
     };
     
@@ -172,28 +198,28 @@ const SnakeGame: React.FC<SnakeGameProps> = ({
       ctx.textAlign = 'center';
       ctx.fillText(
         'SNAKE', 
-        canvas.width / 2, 
-        canvas.height / 2 - renderScale * 5
+        actualCanvasWidth / 2, 
+        actualCanvasHeight / 2 - renderScale * 5
       );
       
       // Draw a small snake
-      ctx.fillRect(canvas.width / 2 - renderScale * 6, canvas.height / 2, renderScale * 3, renderScale * 3);
-      ctx.fillRect(canvas.width / 2 - renderScale * 3, canvas.height / 2, renderScale * 3, renderScale * 3);
-      ctx.fillRect(canvas.width / 2, canvas.height / 2, renderScale * 3, renderScale * 3);
-      ctx.fillRect(canvas.width / 2 + renderScale * 3, canvas.height / 2, renderScale * 3, renderScale * 3);
+      ctx.fillRect(actualCanvasWidth / 2 - renderScale * 6, actualCanvasHeight / 2, renderScale * 3, renderScale * 3);
+      ctx.fillRect(actualCanvasWidth / 2 - renderScale * 3, actualCanvasHeight / 2, renderScale * 3, renderScale * 3);
+      ctx.fillRect(actualCanvasWidth / 2, actualCanvasHeight / 2, renderScale * 3, renderScale * 3);
+      ctx.fillRect(actualCanvasWidth / 2 + renderScale * 3, actualCanvasHeight / 2, renderScale * 3, renderScale * 3);
       
       ctx.font = `${Math.floor(renderScale * 2)}px monospace`;
       ctx.fillText(
         'PRESS SPACE', 
-        canvas.width / 2, 
-        canvas.height / 2 + renderScale * 8
+        actualCanvasWidth / 2, 
+        actualCanvasHeight / 2 + renderScale * 8
       );
       
       if (isTouchDevice) {
         ctx.fillText(
           'OR TAP SCREEN', 
-          canvas.width / 2, 
-          canvas.height / 2 + renderScale * 12
+          actualCanvasWidth / 2, 
+          actualCanvasHeight / 2 + renderScale * 12
         );
       }
       
@@ -202,8 +228,8 @@ const SnakeGame: React.FC<SnakeGameProps> = ({
       ctx.font = `${Math.floor(renderScale * 1.5)}px monospace`;
       ctx.fillText(
         soundStatus, 
-        canvas.width / 2, 
-        canvas.height - renderScale * 3
+        actualCanvasWidth / 2, 
+        actualCanvasHeight - renderScale * 3
       );
     };
     
@@ -218,7 +244,7 @@ const SnakeGame: React.FC<SnakeGameProps> = ({
       for (let x = 0; x <= canvasWidth; x++) {
         ctx.beginPath();
         ctx.moveTo(x * renderScale, 0);
-        ctx.lineTo(x * renderScale, canvas.height);
+        ctx.lineTo(x * renderScale, actualCanvasHeight);
         ctx.stroke();
       }
       
@@ -226,7 +252,7 @@ const SnakeGame: React.FC<SnakeGameProps> = ({
       for (let y = 0; y <= canvasHeight; y++) {
         ctx.beginPath();
         ctx.moveTo(0, y * renderScale);
-        ctx.lineTo(canvas.width, y * renderScale);
+        ctx.lineTo(actualCanvasWidth, y * renderScale);
         ctx.stroke();
       }
     };
@@ -273,7 +299,11 @@ const SnakeGame: React.FC<SnakeGameProps> = ({
   }, [
     canvasWidth,
     canvasHeight,
+    containerWidth,
+    containerHeight,
     renderScale,
+    actualCanvasWidth,
+    actualCanvasHeight,
     snake,
     food,
     score,
@@ -384,14 +414,14 @@ const SnakeGame: React.FC<SnakeGameProps> = ({
     <div className="snake-game-container">
       <canvas 
         ref={canvasRef}
-        width={canvasWidth * renderScale}
-        height={canvasHeight * renderScale}
         className="snake-game-canvas"
         style={{ 
-          maxWidth: '672px', 
-          maxHeight: '384px',
-          transform: 'scale(0.82)',
-          transformOrigin: 'top left',
+          width: 'auto',
+          height: 'auto',
+          display: 'block',
+          maxWidth: '100%',
+          maxHeight: '100%',
+          objectFit: 'contain',
         }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}

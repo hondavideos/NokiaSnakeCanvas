@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path, { dirname } from "path";
@@ -27,4 +28,8 @@ export default defineConfig({
   },
   // Add support for large models and audio files
   assetsInclude: ["**/*.gltf", "**/*.glb", "**/*.mp3", "**/*.ogg", "**/*.wav"],
+  test: {
+    globals: true,
+    environment: 'jsdom',
+  },
 });

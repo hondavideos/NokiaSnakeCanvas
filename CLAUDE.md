@@ -43,15 +43,22 @@ The development server runs on port 5000 and serves both the API and client appl
 - `client/src/lib/stores/`: Zustand state management stores
 
 ### Game Implementation Details
-- **Canvas Rendering**: Custom pixel-perfect Snake game with Nokia 3310 dimensions (84x48 pixels)
-- **Screen Aspect Ratio**: 7:4 matching original Nokia hardware
-- **Render Scale**: 8x scaling for modern displays
+- **Canvas Rendering**: Custom pixel-perfect Snake game with 28×16 grid (672×384px canvas)
+- **Cell Size**: 24×24px per cell for improved visibility (reduced from original 84×48 grid)
+- **Screen Aspect Ratio**: 7:4 matching original Nokia hardware  
+- **Render Scale**: Dynamically calculated to maintain 672×384px target canvas size
 - **Debug Mode**: Press Ctrl+Shift+D to toggle debug overlay and alignment markers
 
 ### State Management Stores
-- `useSnakeGame.ts`: Core game logic (snake movement, collision detection, scoring)
-- `useAudio.tsx`: Sound effects management with mute/unmute functionality
+- `useSnakeGame.ts`: Core game logic with 28×16 grid (snake movement, collision detection, scoring)
+- `useAudio.tsx`: Sound effects management with mute/unmute functionality  
 - `useGame.tsx`: General game state management
+
+### Grid Configuration
+- **Current Grid**: 28×16 cells (optimized for visibility)
+- **Canvas Target**: 672×384px (28×24px and 16×24px)
+- **Wrap-around**: All edges (left↔right, top↔bottom)
+- **Initial Snake**: Center position at (14,8) with 3 segments
 
 ## Nokia Screen Positioning
 The game is precisely positioned within the Nokia phone frame image:

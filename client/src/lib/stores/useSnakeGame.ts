@@ -16,7 +16,7 @@ interface SnakeGameState {
   highScore: number;
   gameOver: boolean;
   isPaused: boolean;
-  gameInterval: ReturnType<typeof setInterval> | null;
+  lastTick: number;
   gridWidth: number;
   gridHeight: number;
   
@@ -26,7 +26,6 @@ interface SnakeGameState {
   resetGame: () => void;
   togglePause: () => void;
   moveSnake: () => void;
-  checkCollision: () => boolean;
   generateFood: () => void;
   increaseSpeed: () => void;
 }
@@ -42,9 +41,9 @@ export const useSnakeGame = create<SnakeGameState>((set, get) => ({
   highScore: 0,
   gameOver: false,
   isPaused: false,
-  gameInterval: null,
-  gridWidth: 84,
-  gridHeight: 48,
+  lastTick: 0,
+  gridWidth: 28,
+  gridHeight: 16,
   
   setDirection: (direction: Direction) => {
     // Prevent 180° turns
@@ -63,17 +62,11 @@ export const useSnakeGame = create<SnakeGameState>((set, get) => ({
   },
   
   startGame: () => {
-    // Clear any existing interval
-    const interval = get().gameInterval;
-    if (interval !== null) {
-      clearInterval(interval);
-    }
-    
     // Initial snake position (middle of screen)
     const initialSnake = [
-      { x: 42, y: 24 }, // Head
-      { x: 41, y: 24 },
-      { x: 40, y: 24 },
+      { x: 14, y: 8 }, // Head
+      { x: 13, y: 8 },
+      { x: 12, y: 8 },
     ];
     
     // Generate initial food - at random position that's not on the snake
@@ -85,7 +78,7 @@ export const useSnakeGame = create<SnakeGameState>((set, get) => ({
     
     console.log("Game started with food at:", initialFood);
     
-    // Set initial state
+    // Set initial state and start the engine timing
     set({
       snake: initialSnake,
       food: initialFood,
@@ -95,25 +88,11 @@ export const useSnakeGame = create<SnakeGameState>((set, get) => ({
       score: 0,
       gameOver: false,
       isPaused: false,
+      lastTick: performance.now(), // Initialize timing
     });
-    
-    // Start game loop
-    const gameInterval = setInterval(() => {
-      if (!get().isPaused && !get().gameOver) {
-        get().moveSnake();
-      }
-    }, get().speed);
-    
-    set({ gameInterval });
   },
   
   resetGame: () => {
-    // Clear the interval
-    const interval = get().gameInterval;
-    if (interval !== null) {
-      clearInterval(interval);
-    }
-    
     // Update high score if needed
     const currentScore = get().score;
     const currentHighScore = get().highScore;
@@ -132,7 +111,7 @@ export const useSnakeGame = create<SnakeGameState>((set, get) => ({
       score: 0,
       gameOver: false,
       isPaused: false,
-      gameInterval: null,
+      lastTick: 0,
     });
   },
   
@@ -180,14 +159,16 @@ export const useSnakeGame = create<SnakeGameState>((set, get) => ({
     // Log the new head position for debugging
     console.log("New head position:", head.x, head.y);
     
-    // Check for collision with self
-    if (get().checkCollision()) {
-      set({ gameOver: true });
-      return;
-    }
-    
     // Create new snake with new head
     const newSnake = [head, ...snake];
+    
+    // Check for collision with self using the new snake state
+    for (let i = 1; i < newSnake.length; i++) {
+      if (newSnake[i].x === head.x && newSnake[i].y === head.y) {
+        set({ gameOver: true });
+        return;
+      }
+    }
     
     // Check if food is eaten
     const foodEaten = head.x === food.x && head.y === food.y;
@@ -217,19 +198,6 @@ export const useSnakeGame = create<SnakeGameState>((set, get) => ({
     set({ snake: newSnake });
   },
   
-  checkCollision: () => {
-    const { snake } = get();
-    const head = snake[0];
-    
-    // Check collision with self (skip the head)
-    for (let i = 1; i < snake.length; i++) {
-      if (snake[i].x === head.x && snake[i].y === head.y) {
-        return true;
-      }
-    }
-    
-    return false;
-  },
   
   generateFood: () => {
     const { gridWidth, gridHeight, snake } = get();
@@ -240,32 +208,27 @@ export const useSnakeGame = create<SnakeGameState>((set, get) => ({
   },
   
   increaseSpeed: () => {
-    const { speed, gameInterval } = get();
-    
-    if (speed > 50) {
-      // Clear existing interval
-      const interval = gameInterval;
-      if (interval !== null) {
-        clearInterval(interval);
-      }
-      
-      // Calculate new speed (10% faster)
-      const newSpeed = Math.max(50, Math.floor(speed * 0.9));
-      
-      // Start new interval with increased speed
-      const newInterval = setInterval(() => {
-        if (!get().isPaused && !get().gameOver) {
-          get().moveSnake();
-        }
-      }, newSpeed);
-      
-      set({
-        speed: newSpeed,
-        gameInterval: newInterval,
-      });
-    }
+    set(state => ({
+      speed: Math.max(50, Math.floor(state.speed * 0.9))
+    }));
   },
 }));
+
+// Start the game engine loop
+const engine = () => {
+  const { lastTick, speed, isPaused, gameOver, moveSnake } = useSnakeGame.getState();
+  const now = performance.now();
+  
+  if (!isPaused && !gameOver && now - lastTick >= speed) {
+    moveSnake();
+    useSnakeGame.setState({ lastTick: now });
+  }
+  
+  requestAnimationFrame(engine);
+};
+
+// Start the engine
+requestAnimationFrame(engine);
 
 // Helper function to generate random position for food
 // that doesn't collide with the snake
