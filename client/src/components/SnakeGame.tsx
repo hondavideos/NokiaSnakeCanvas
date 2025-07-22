@@ -72,7 +72,8 @@ const SnakeGame: React.FC<SnakeGameProps> = ({
     // Pixel-art rendering setup
     ctx.imageSmoothingEnabled = false;
     
-    const pixelSize = 1; // Size of a single game pixel
+    const CELL_SIZE = 1; // Normalized cell size for both snake and food
+    const pixelSize = CELL_SIZE; // Size of a single game pixel
     
     // Clear the canvas
     const clearCanvas = () => {
@@ -93,46 +94,32 @@ const SnakeGame: React.FC<SnakeGameProps> = ({
         // Use strict bounds checking for rendering
         if (x >= 0 && x < canvasWidth && y >= 0 && y < canvasHeight) {
           ctx.fillRect(
-            x * pixelSize * renderScale, 
-            y * pixelSize * renderScale, 
-            pixelSize * renderScale, 
-            pixelSize * renderScale
+            x * CELL_SIZE * renderScale, 
+            y * CELL_SIZE * renderScale, 
+            CELL_SIZE * renderScale, 
+            CELL_SIZE * renderScale
           );
         }
       });
     };
     
-    // Draw the food - with GUARANTEED visibility in a fixed spot
+    // Draw the food - same size as snake segments
     const drawFood = () => {
-      // Use fixed position in center of the screen
-      const foodX = Math.floor(canvasWidth/2);
-      const foodY = Math.floor(canvasHeight/2);
+      // Calculate pixel coordinates using CELL_SIZE
+      const foodPixelX = food.x * CELL_SIZE * renderScale;
+      const foodPixelY = food.y * CELL_SIZE * renderScale;
+      const cellSize = CELL_SIZE * renderScale; // Same size as snake segments
       
-      // Calculate pixel coordinates
-      const foodPixelX = foodX * pixelSize * renderScale;
-      const foodPixelY = foodY * pixelSize * renderScale;
-      const foodSize = pixelSize * renderScale * 4; // Make it larger (4x4 pixels)
-      
-      // Draw solid black square
+      // Draw solid black square (same size as snake)
       ctx.fillStyle = '#000000';
-      ctx.fillRect(foodPixelX, foodPixelY, foodSize, foodSize);
+      ctx.fillRect(foodPixelX, foodPixelY, cellSize, cellSize);
       
-      // Draw a white X over the black square for maximum visibility
+      // Draw white border for contrast
       ctx.strokeStyle = '#FFFFFF';
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 1;
+      ctx.strokeRect(foodPixelX, foodPixelY, cellSize, cellSize);
       
-      // Draw outer box
-      ctx.strokeRect(foodPixelX, foodPixelY, foodSize, foodSize);
-      
-      // Draw X pattern
-      ctx.beginPath();
-      ctx.moveTo(foodPixelX, foodPixelY);
-      ctx.lineTo(foodPixelX + foodSize, foodPixelY + foodSize);
-      ctx.moveTo(foodPixelX + foodSize, foodPixelY);
-      ctx.lineTo(foodPixelX, foodPixelY + foodSize);
-      ctx.stroke();
-      
-      console.log("Drawing food at FIXED position:", foodX, foodY);
+      console.log("Drawing food at position:", food.x, food.y);
     };
     
     // Draw score

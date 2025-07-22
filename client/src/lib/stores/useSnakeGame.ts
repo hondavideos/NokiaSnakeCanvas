@@ -153,24 +153,29 @@ export const useSnakeGame = create<SnakeGameState>((set, get) => ({
     // Use the nextDirection as the current direction for this move
     set({ direction: nextDirection });
     
-    // Calculate new head position with immediate wrapping
+    // Calculate new head position with INSTANT wrapping using modulo
     const head = { ...snake[0] };
     
-    // Force immediate wrapping with modulo operation (more reliable)
+    // Move the head one step in the direction
+    let dx = 0, dy = 0;
     switch (nextDirection) {
       case 'up':
-        head.y = (head.y - 1 + gridHeight) % gridHeight;
+        dy = -1;
         break;
       case 'down':
-        head.y = (head.y + 1) % gridHeight;
+        dy = 1;
         break;
       case 'left':
-        head.x = (head.x - 1 + gridWidth) % gridWidth;
+        dx = -1;
         break;
       case 'right':
-        head.x = (head.x + 1) % gridWidth;
+        dx = 1;
         break;
     }
+    
+    // Apply movement and instant wrapping with modulo arithmetic
+    head.x = (head.x + dx + gridWidth) % gridWidth;
+    head.y = (head.y + dy + gridHeight) % gridHeight;
     
     // Log the new head position for debugging
     console.log("New head position:", head.x, head.y);
@@ -228,42 +233,10 @@ export const useSnakeGame = create<SnakeGameState>((set, get) => ({
   
   generateFood: () => {
     const { gridWidth, gridHeight, snake } = get();
-    // Make sure we have a valid snake before generating food
-    if (snake.length > 0) {
-      // For better visibility, randomly select food from a small set of fixed positions
-      // This ensures the food is always visible on the screen
-      const visiblePositions = [
-        { x: 20, y: 20 },
-        { x: 40, y: 20 },
-        { x: 60, y: 20 },
-        { x: 20, y: 30 },
-        { x: 40, y: 30 },
-        { x: 60, y: 30 }
-      ];
-      
-      // Filter out positions that collide with snake
-      const availablePositions = visiblePositions.filter(pos => {
-        return !snake.some(segment => segment.x === pos.x && segment.y === pos.y);
-      });
-      
-      let newFood;
-      if (availablePositions.length > 0) {
-        // If we have available preset positions, use one of them
-        const randomIndex = Math.floor(Math.random() * availablePositions.length);
-        newFood = availablePositions[randomIndex];
-      } else {
-        // Fallback to completely random position
-        newFood = generateRandomPosition(gridWidth, gridHeight, snake);
-      }
-      
-      console.log("Generated new food at:", newFood);
-      set({ food: newFood });
-    } else {
-      // If no snake (game not started), place food at a clearly visible position
-      const defaultFood = { x: 40, y: 24 };
-      console.log("Set default food at:", defaultFood);
-      set({ food: defaultFood });
-    }
+    // Generate food at random position within grid bounds
+    const newFood = generateRandomPosition(gridWidth, gridHeight, snake);
+    console.log("Generated new food at:", newFood);
+    set({ food: newFood });
   },
   
   increaseSpeed: () => {
