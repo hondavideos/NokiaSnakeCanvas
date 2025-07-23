@@ -24,8 +24,8 @@ function App() {
         <div className="phone-container" style={{
           background: `url('/images/nokia-frame.png') center/contain no-repeat`,
           position: 'relative',
-          width: '800px',
-          height: '600px',
+          width: '1360px', // 800px * 1.7 = 1360px
+          height: '1020px', // 600px * 1.7 = 1020px
           pointerEvents: 'none', // Per requirements
         }}>
           {/* Game viewport with exact positioning to match Nokia phone screen */}
