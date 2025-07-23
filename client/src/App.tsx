@@ -28,16 +28,18 @@ function App() {
           height: '600px',
           pointerEvents: 'none', // Per requirements
         }}>
-          {/* Game viewport with exact positioning */}
+          {/* Game viewport with exact positioning to match Nokia phone screen */}
           <div className="game-canvas" style={{
             position: 'absolute',
-            top: '39.8%',      // Moved down 10% per request
-            left: '50.05%',    // Horizontal center
+            top: '40.5%',      // Adjusted to better match the phone's screen position
+            left: '50%',       // Perfect horizontal center
             transform: 'translate(-50%, -50%)',
-            width: '19.5%',    // Reduced by 30% (27.5% * 0.7 = 19.25%, rounded to 19.5%)
+            width: '17.5%',    // Reduced by 10% from 19.5% to fit Nokia screen better
             aspectRatio: '7/4', // Nokia 3310 screen aspect ratio (84x48)
             overflow: 'hidden',
             pointerEvents: 'auto', // Enable interaction within the game area
+            borderRadius: '4px', // Subtle curve to match Nokia screen curvature
+            filter: 'brightness(0.95)', // Slight dimming for more authentic CRT look
           }}>
             <NokiaScreen />
             
