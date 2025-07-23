@@ -35,7 +35,7 @@ function App() {
             left: '50%',       // Perfect horizontal center
             transform: 'translate(-50%, -50%)',
             width: '17.5%',    // Reverted to proper width that doesn't overlay the sides
-            height: '11%',     // 10% height increase to cover black bars at top/bottom
+            height: '13.2%',   // 20% height increase (11% * 1.2) to properly cover black bars
             overflow: 'hidden',
             pointerEvents: 'auto', // Enable interaction within the game area
             borderRadius: '4px', // Subtle curve to match Nokia screen curvature
