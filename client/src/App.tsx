@@ -34,8 +34,8 @@ function App() {
             top: '40.8%',      // Fine-tuned to ensure full Nokia screen coverage
             left: '50%',       // Perfect horizontal center
             transform: 'translate(-50%, -50%)',
-            width: '19.2%',    // Increased to fully cover Nokia screen and eliminate black borders
-            aspectRatio: '7/4', // Nokia 3310 screen aspect ratio (84x48)
+            width: '17.5%',    // Reverted to proper width that doesn't overlay the sides
+            height: '11%',     // 10% height increase to cover black bars at top/bottom
             overflow: 'hidden',
             pointerEvents: 'auto', // Enable interaction within the game area
             borderRadius: '4px', // Subtle curve to match Nokia screen curvature
