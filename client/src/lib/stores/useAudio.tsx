@@ -43,15 +43,16 @@ export const useAudio = create<AudioState>((set, get) => ({
   },
   
   playHit: () => {
-    const { hitSound, isMuted, audioPool, poolSize } = get();
+    const state = get();
+    const { hitSound, isMuted, audioPool, poolSize } = state;
     if (hitSound && !isMuted) {
       // Find available audio from pool or create new one
       let availableAudio = audioPool.find(audio => audio.paused || audio.ended);
       
       if (!availableAudio && audioPool.length < poolSize) {
         availableAudio = hitSound.cloneNode() as HTMLAudioElement;
+        // Directly modify the array without triggering state update
         audioPool.push(availableAudio);
-        set({ audioPool: [...audioPool] }); // Update state with new pool
       }
       
       if (availableAudio) {

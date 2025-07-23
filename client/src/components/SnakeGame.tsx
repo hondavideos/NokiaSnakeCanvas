@@ -128,7 +128,7 @@ const SnakeGame: React.FC<SnakeGameProps> = ({
     };
   }, [cleanup]);
 
-  // Set up the rendering
+  // Canvas setup - only runs when dimensions change
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -144,6 +144,15 @@ const SnakeGame: React.FC<SnakeGameProps> = ({
     
     // Pixel-art rendering setup
     ctx.imageSmoothingEnabled = false;
+  }, [actualCanvasWidth, actualCanvasHeight]); // Only re-run when dimensions change
+
+  // Rendering logic - separate from canvas setup
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
     
     const CELL_SIZE = 1; // Normalized cell size for both snake and food
     const pixelSize = CELL_SIZE; // Size of a single game pixel
@@ -340,23 +349,7 @@ const SnakeGame: React.FC<SnakeGameProps> = ({
     return () => {
       // Any cleanup if needed
     };
-  }, [
-    canvasWidth,
-    canvasHeight,
-    containerWidth,
-    containerHeight,
-    renderScale,
-    actualCanvasWidth,
-    actualCanvasHeight,
-    snake,
-    food,
-    score,
-    gameOver,
-    isPaused,
-    showDebug,
-    isTouchDevice,
-    isMuted
-  ]);
+  }, [snake, food, score, gameOver, isPaused, showDebug]); // Only re-render when game state changes
   
   // Handle keyboard controls
   useEffect(() => {

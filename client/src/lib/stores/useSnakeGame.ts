@@ -181,21 +181,28 @@ export const useSnakeGame = create<SnakeGameState>((set, get) => ({
       // Increase score
       const newScore = score + 1;
       
-      // Generate new food
-      get().generateFood();
+      // Generate new food position
+      const newFood = generateRandomPosition(gridWidth, gridHeight, newSnake);
       
-      // Increase speed every 5 points
+      // Calculate new speed if needed
+      let newSpeed = get().speed;
       if (newScore % 5 === 0) {
-        get().increaseSpeed();
+        newSpeed = Math.max(50, Math.floor(newSpeed * 0.9));
       }
       
-      set({ score: newScore });
+      // Batch all state updates into a single call
+      set({ 
+        snake: newSnake, 
+        score: newScore, 
+        food: newFood,
+        speed: newSpeed
+      });
     } else {
       // Remove tail if no food eaten
       newSnake.pop();
+      // Single state update for snake movement
+      set({ snake: newSnake });
     }
-    
-    set({ snake: newSnake });
   },
   
   
@@ -218,30 +225,58 @@ export const useSnakeGame = create<SnakeGameState>((set, get) => ({
 // This eliminates the global loop that runs continuously
 
 // Helper function to generate random position for food
-// that doesn't collide with the snake
+// that doesn't collide with the snake - optimized for performance
 function generateRandomPosition(
   gridWidth: number,
   gridHeight: number,
   snake: Position[]
 ): Position {
-  let newPosition: Position;
-  let collision: boolean;
+  const totalCells = gridWidth * gridHeight;
+  const occupiedCells = new Set(snake.map(segment => `${segment.x},${segment.y}`));
+  
+  // If snake is getting very long, use the free cells approach
+  if (snake.length > totalCells * 0.5) {
+    const freeCells: Position[] = [];
+    for (let x = 0; x < gridWidth; x++) {
+      for (let y = 0; y < gridHeight; y++) {
+        if (!occupiedCells.has(`${x},${y}`)) {
+          freeCells.push({ x, y });
+        }
+      }
+    }
+    if (freeCells.length === 0) {
+      // Game should be over - return current food position as fallback
+      return { x: 0, y: 0 };
+    }
+    return freeCells[Math.floor(Math.random() * freeCells.length)];
+  }
+  
+  // For shorter snakes, use the original random approach with better collision detection
+  let attempts = 0;
+  const maxAttempts = Math.min(100, totalCells - snake.length);
   
   do {
-    collision = false;
-    newPosition = {
+    const newPosition = {
       x: Math.floor(Math.random() * gridWidth),
       y: Math.floor(Math.random() * gridHeight),
     };
     
-    // Check if new position collides with any part of the snake
-    for (const segment of snake) {
-      if (segment.x === newPosition.x && segment.y === newPosition.y) {
-        collision = true;
-        break;
+    if (!occupiedCells.has(`${newPosition.x},${newPosition.y}`)) {
+      return newPosition;
+    }
+    
+    attempts++;
+  } while (attempts < maxAttempts);
+  
+  // Fallback: return first available position
+  for (let x = 0; x < gridWidth; x++) {
+    for (let y = 0; y < gridHeight; y++) {
+      if (!occupiedCells.has(`${x},${y}`)) {
+        return { x, y };
       }
     }
-  } while (collision);
+  }
   
-  return newPosition;
+  // This should never happen unless the grid is completely full
+  return { x: 0, y: 0 };
 }
