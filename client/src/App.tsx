@@ -31,10 +31,10 @@ function App() {
           {/* Game viewport with exact positioning to match Nokia phone screen */}
           <div className="game-canvas" style={{
             position: 'absolute',
-            top: '40.5%',      // Adjusted to better match the phone's screen position
+            top: '40.8%',      // Fine-tuned to ensure full Nokia screen coverage
             left: '50%',       // Perfect horizontal center
             transform: 'translate(-50%, -50%)',
-            width: '17.5%',    // Reduced by 10% from 19.5% to fit Nokia screen better
+            width: '19.2%',    // Increased to fully cover Nokia screen and eliminate black borders
             aspectRatio: '7/4', // Nokia 3310 screen aspect ratio (84x48)
             overflow: 'hidden',
             pointerEvents: 'auto', // Enable interaction within the game area
