@@ -31,11 +31,11 @@ function App() {
           {/* Game viewport with exact positioning to match Nokia phone screen */}
           <div className="game-canvas" style={{
             position: 'absolute',
-            top: '40.8%',      // Fine-tuned to ensure full Nokia screen coverage
+            top: 'calc(40.8% - 20px)', // Moved up 20 pixels for better positioning
             left: '50%',       // Perfect horizontal center
             transform: 'translate(-50%, -50%)',
             width: '17.5%',    // Reverted to proper width that doesn't overlay the sides
-            height: '13.2%',   // 20% height increase (11% * 1.2) to properly cover black bars
+            height: '15.84%',  // Additional 20% height increase (13.2% * 1.2) for full coverage
             overflow: 'hidden',
             pointerEvents: 'auto', // Enable interaction within the game area
             borderRadius: '4px', // Subtle curve to match Nokia screen curvature
