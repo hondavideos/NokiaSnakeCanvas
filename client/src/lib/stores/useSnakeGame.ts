@@ -130,7 +130,7 @@ export const useSnakeGame = create<SnakeGameState>((set, get) => ({
     } = get();
     
     // Use the nextDirection as the current direction for this move
-    set({ direction: nextDirection });
+    // (Direction will be updated in the batched state update below)
     
     // Calculate new head position with INSTANT wrapping using modulo
     const head = { ...snake[0] };
@@ -195,13 +195,14 @@ export const useSnakeGame = create<SnakeGameState>((set, get) => ({
         snake: newSnake, 
         score: newScore, 
         food: newFood,
-        speed: newSpeed
+        speed: newSpeed,
+        direction: nextDirection
       });
     } else {
       // Remove tail if no food eaten
       newSnake.pop();
       // Single state update for snake movement
-      set({ snake: newSnake });
+      set({ snake: newSnake, direction: nextDirection });
     }
   },
   

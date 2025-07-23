@@ -67,22 +67,27 @@ const SnakeGame: React.FC<SnakeGameProps> = ({
   const actualCanvasWidth = canvasWidth * renderScale;
   const actualCanvasHeight = canvasHeight * renderScale;
   
-  // Get snake game state and methods from our store
-  const {
-    snake,
-    food,
-    direction,
-    score,
-    gameOver,
-    isPaused,
-    setDirection,
-    startGame,
-    resetGame,
-    togglePause
-  } = useSnakeGame();
+  // Get snake game state with selective subscriptions for optimal performance
+  const snake = useSnakeGame(state => state.snake);
+  const food = useSnakeGame(state => state.food);
+  const direction = useSnakeGame(state => state.direction);
+  const score = useSnakeGame(state => state.score);
+  const gameOver = useSnakeGame(state => state.gameOver);
+  const isPaused = useSnakeGame(state => state.isPaused);
   
-  // Audio initialization
-  const { hitSound, setHitSound, playHit, toggleMute, isMuted, cleanup } = useAudio();
+  // Get stable method references (these don't change)
+  const setDirection = useSnakeGame(state => state.setDirection);
+  const startGame = useSnakeGame(state => state.startGame);
+  const resetGame = useSnakeGame(state => state.resetGame);
+  const togglePause = useSnakeGame(state => state.togglePause);
+  
+  // Audio initialization with selective subscriptions
+  const hitSound = useAudio(state => state.hitSound);
+  const isMuted = useAudio(state => state.isMuted);
+  const setHitSound = useAudio(state => state.setHitSound);
+  const playHit = useAudio(state => state.playHit);
+  const toggleMute = useAudio(state => state.toggleMute);
+  const cleanup = useAudio(state => state.cleanup);
   
   // Game engine management
   const { startEngine, stopEngine } = useGameEngine();
@@ -351,47 +356,50 @@ const SnakeGame: React.FC<SnakeGameProps> = ({
     };
   }, [snake, food, score, gameOver, isPaused, showDebug]); // Only re-render when game state changes
   
-  // Handle keyboard controls
+  // Stable keyboard handler with useCallback
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    const currentState = useSnakeGame.getState();
+    const { direction, gameOver, snake } = currentState;
+    
+    switch (e.code) {
+      case 'ArrowUp':
+      case 'KeyW':
+        if (direction !== 'down') setDirection('up');
+        break;
+      case 'ArrowDown':
+      case 'KeyS':
+        if (direction !== 'up') setDirection('down');
+        break;
+      case 'ArrowLeft':
+      case 'KeyA':
+        if (direction !== 'right') setDirection('left');
+        break;
+      case 'ArrowRight':
+      case 'KeyD':
+        if (direction !== 'left') setDirection('right');
+        break;
+      case 'Space':
+        if (gameOver) {
+          resetGame();
+        } else if (snake.length === 0) {
+          startGame();
+        } else {
+          togglePause();
+        }
+        break;
+      case 'KeyM':
+        toggleMute();
+        break;
+    }
+  }, [setDirection, startGame, resetGame, togglePause, toggleMute]);
+
+  // Handle keyboard controls - only re-register when handler changes
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      switch (e.code) {
-        case 'ArrowUp':
-        case 'KeyW':
-          if (direction !== 'down') setDirection('up');
-          break;
-        case 'ArrowDown':
-        case 'KeyS':
-          if (direction !== 'up') setDirection('down');
-          break;
-        case 'ArrowLeft':
-        case 'KeyA':
-          if (direction !== 'right') setDirection('left');
-          break;
-        case 'ArrowRight':
-        case 'KeyD':
-          if (direction !== 'left') setDirection('right');
-          break;
-        case 'Space':
-          if (gameOver) {
-            resetGame();
-          } else if (snake.length === 0) {
-            startGame();
-          } else {
-            togglePause();
-          }
-          break;
-        case 'KeyM':
-          toggleMute();
-          break;
-      }
-    };
-    
     window.addEventListener('keydown', handleKeyDown);
-    
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [direction, gameOver, snake.length, resetGame, setDirection, startGame, togglePause, toggleMute]);
+  }, [handleKeyDown]);
   
   // Handle touch controls
   const handleTouchStart = (e: React.TouchEvent) => {
