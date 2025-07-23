@@ -1,8 +1,26 @@
 import express, { type Request, Response, NextFunction } from "express";
+import helmet from "helmet";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
+
+// Security headers
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"], // unsafe-eval needed for Vite dev
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", "data:", "blob:"],
+      mediaSrc: ["'self'"],
+      connectSrc: ["'self'", "ws:", "wss:"], // WebSocket for HMR
+      fontSrc: ["'self'", "data:"],
+    }
+  },
+  crossOriginEmbedderPolicy: false, // Needed for audio playback
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 

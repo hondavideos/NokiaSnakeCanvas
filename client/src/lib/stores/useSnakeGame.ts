@@ -76,7 +76,7 @@ export const useSnakeGame = create<SnakeGameState>((set, get) => ({
       initialSnake
     );
     
-    console.log("Game started with food at:", initialFood);
+    // Game start debug log removed for production
     
     // Set initial state and start the engine timing
     set({
@@ -157,7 +157,7 @@ export const useSnakeGame = create<SnakeGameState>((set, get) => ({
     head.y = (head.y + dy + gridHeight) % gridHeight;
     
     // Log the new head position for debugging
-    console.log("New head position:", head.x, head.y);
+    // Snake movement debug log removed for production
     
     // Create new snake with new head
     const newSnake = [head, ...snake];
@@ -203,7 +203,7 @@ export const useSnakeGame = create<SnakeGameState>((set, get) => ({
     const { gridWidth, gridHeight, snake } = get();
     // Generate food at random position within grid bounds
     const newFood = generateRandomPosition(gridWidth, gridHeight, snake);
-    console.log("Generated new food at:", newFood);
+    // Food generation debug log removed for production
     set({ food: newFood });
   },
   
@@ -214,21 +214,8 @@ export const useSnakeGame = create<SnakeGameState>((set, get) => ({
   },
 }));
 
-// Start the game engine loop
-const engine = () => {
-  const { lastTick, speed, isPaused, gameOver, moveSnake } = useSnakeGame.getState();
-  const now = performance.now();
-  
-  if (!isPaused && !gameOver && now - lastTick >= speed) {
-    moveSnake();
-    useSnakeGame.setState({ lastTick: now });
-  }
-  
-  requestAnimationFrame(engine);
-};
-
-// Start the engine
-requestAnimationFrame(engine);
+// Game engine functionality moved to React component lifecycle
+// This eliminates the global loop that runs continuously
 
 // Helper function to generate random position for food
 // that doesn't collide with the snake

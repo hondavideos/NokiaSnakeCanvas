@@ -1,17 +1,8 @@
-import { pgTable, text, serial, integer, boolean } from "drizzle-orm/pg-core";
-import { createInsertSchema } from "drizzle-zod";
+// Database schema removed - Drizzle ORM dependency was removed from project
+// This Snake game doesn't need user authentication or database functionality
+
 import { z } from "zod";
 
-export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
-  username: text("username").notNull().unique(),
-  password: text("password").notNull(),
-});
-
-export const insertUserSchema = createInsertSchema(users).pick({
-  username: true,
-  password: true,
-});
-
-export type InsertUser = z.infer<typeof insertUserSchema>;
-export type User = typeof users.$inferSelect;
+// Placeholder types to prevent import errors - these should be removed when no longer referenced
+export type InsertUser = { username: string; password: string };
+export type User = { id: number; username: string; password: string };

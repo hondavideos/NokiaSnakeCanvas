@@ -16,9 +16,7 @@ const NokiaScreen: React.FC = () => {
           height: offsetHeight
         });
         
-        console.log('🔍 Nokia screen container dimensions:', offsetWidth, 'x', offsetHeight);
-        console.log('🔍 Expected grid: 28×16 pixels');
-        console.log('🔍 Container aspect ratio:', (offsetWidth / offsetHeight).toFixed(3), '(expected: 1.75 for 7:4)');
+        // Nokia screen debug logs removed for production
       }
     };
 

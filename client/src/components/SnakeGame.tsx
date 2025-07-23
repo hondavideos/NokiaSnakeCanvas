@@ -1,6 +1,38 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { useSnakeGame } from '../lib/stores/useSnakeGame';
 import { useAudio } from '../lib/stores/useAudio';
+
+// Custom hook to manage game engine lifecycle
+const useGameEngine = () => {
+  const engineRef = useRef<number | null>(null);
+  
+  const startEngine = useCallback(() => {
+    if (engineRef.current) return;
+    
+    const engine = () => {
+      const { lastTick, speed, isPaused, gameOver, moveSnake } = useSnakeGame.getState();
+      const now = performance.now();
+      
+      if (!isPaused && !gameOver && now - lastTick >= speed) {
+        moveSnake();
+        useSnakeGame.setState({ lastTick: now });
+      }
+      
+      engineRef.current = requestAnimationFrame(engine);
+    };
+    
+    engineRef.current = requestAnimationFrame(engine);
+  }, []);
+  
+  const stopEngine = useCallback(() => {
+    if (engineRef.current) {
+      cancelAnimationFrame(engineRef.current);
+      engineRef.current = null;
+    }
+  }, []);
+  
+  return { startEngine, stopEngine };
+};
 
 interface SnakeGameProps {
   canvasWidth: number;
@@ -50,7 +82,10 @@ const SnakeGame: React.FC<SnakeGameProps> = ({
   } = useSnakeGame();
   
   // Audio initialization
-  const { hitSound, setHitSound, playHit, toggleMute, isMuted } = useAudio();
+  const { hitSound, setHitSound, playHit, toggleMute, isMuted, cleanup } = useAudio();
+  
+  // Game engine management
+  const { startEngine, stopEngine } = useGameEngine();
   
   // Initialize sounds and game elements
   useEffect(() => {
@@ -77,6 +112,22 @@ const SnakeGame: React.FC<SnakeGameProps> = ({
     }
   }, [hitSound, setHitSound, food]);
 
+  // Game engine lifecycle management
+  useEffect(() => {
+    startEngine();
+    
+    return () => {
+      stopEngine();
+    };
+  }, [startEngine, stopEngine]);
+
+  // Cleanup audio on unmount
+  useEffect(() => {
+    return () => {
+      cleanup();
+    };
+  }, [cleanup]);
+
   // Set up the rendering
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -86,14 +137,7 @@ const SnakeGame: React.FC<SnakeGameProps> = ({
     canvas.width = actualCanvasWidth;
     canvas.height = actualCanvasHeight;
     
-    console.log('🎮 Canvas Setup:');
-    console.log('  Container size:', containerWidth, 'x', containerHeight);
-    console.log('  Grid size:', canvasWidth, 'x', canvasHeight);
-    console.log('  Target size: 672×384px');
-    console.log('  Calculated renderScale:', renderScale);
-    console.log('  Actual canvas size:', actualCanvasWidth, 'x', actualCanvasHeight);
-    console.log('  Canvas element size:', canvas.offsetWidth, 'x', canvas.offsetHeight);
-    console.debug(`Final canvas: ${actualCanvasWidth}×${actualCanvasHeight}px`);
+    // Canvas setup complete - removed debug logs for production
     
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -145,7 +189,7 @@ const SnakeGame: React.FC<SnakeGameProps> = ({
       ctx.lineWidth = 1;
       ctx.strokeRect(foodPixelX, foodPixelY, cellSize, cellSize);
       
-      console.log("Drawing food at position:", food.x, food.y);
+      // Food position debug log removed for production
     };
     
     // Draw score
