@@ -281,8 +281,8 @@ const SnakeGame: React.FC<SnakeGameProps> = ({
         );
       }
       
-      // Sound status
-      const soundStatus = isMuted ? "SOUND: OFF" : "SOUND: ON";
+      // Sound status with M key indicator
+      const soundStatus = isMuted ? "SOUND: OFF (M)" : "SOUND: ON (M)";
       ctx.font = `${Math.floor(renderScale * 1.5)}px monospace`;
       ctx.fillText(
         soundStatus, 

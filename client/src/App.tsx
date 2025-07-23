@@ -31,7 +31,7 @@ function App() {
           {/* Game viewport with exact positioning to match Nokia phone screen */}
           <div className="game-canvas" style={{
             position: 'absolute',
-            top: 'calc(40.8% - 20px)', // Moved up 20 pixels for better positioning
+            top: 'calc(40.8% - 10px)', // Moved down 10px from previous position
             left: '50%',       // Perfect horizontal center
             transform: 'translate(-50%, -50%)',
             width: '17.5%',    // Reverted to proper width that doesn't overlay the sides

@@ -184,11 +184,9 @@ export const useSnakeGame = create<SnakeGameState>((set, get) => ({
       // Generate new food position
       const newFood = generateRandomPosition(gridWidth, gridHeight, newSnake);
       
-      // Calculate new speed if needed
+      // Progressive speed increase with every food eaten (Option A)
       let newSpeed = get().speed;
-      if (newScore % 5 === 0) {
-        newSpeed = Math.max(50, Math.floor(newSpeed * 0.9));
-      }
+      newSpeed = Math.max(50, Math.floor(newSpeed * 0.98)); // 2% faster each food
       
       // Batch all state updates into a single call
       set({ 
