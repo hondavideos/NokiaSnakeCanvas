@@ -5,6 +5,18 @@ import './index.css';
 function App() {
   const [loading, setLoading] = useState(true);
 
+  // ====== BACKGROUND VERSION SWITCHING ======
+  // Change this flag to switch between backgrounds:
+  // true  = New forest-covered Nokia background
+  // false = Original plain Nokia frame
+  const useForestBackground = true;
+  
+  // Background image paths
+  const backgroundImages = {
+    original: '/images/nokia-frame.png',     // Original working version
+    forest: '/images/nokia-forest.png'      // New forest-themed version
+  };
+
   useEffect(() => {
     // Simulate loading time to ensure assets are ready
     const timer = setTimeout(() => {
@@ -22,10 +34,10 @@ function App() {
         </div>
       ) : (
         <div className="phone-container" style={{
-          background: `url('/images/nokia-frame.png') center/contain no-repeat`,
+          background: `url('${useForestBackground ? backgroundImages.forest : backgroundImages.original}') center/contain no-repeat`,
           position: 'relative',
-          width: '1360px', // 800px * 1.7 = 1360px
-          height: '1020px', // 600px * 1.7 = 1020px
+          width: '1360px', // 800px * 1.7 = 1360px (170% scale for better visibility)
+          height: '1020px', // 600px * 1.7 = 1020px (170% scale for better visibility)
           pointerEvents: 'none', // Per requirements
         }}>
           {/* Game viewport with exact positioning to match Nokia phone screen */}
@@ -51,5 +63,29 @@ function App() {
     </div>
   );
 }
+
+/* 
+====== ROLLBACK INSTRUCTIONS ======
+
+TO SWITCH BACK TO ORIGINAL BACKGROUND:
+1. Change line 12: const useForestBackground = false;
+2. Save the file - that's it!
+
+CURRENT WORKING GAME SCREEN POSITIONING:
+- top: 'calc(40.8% - 10px)'     // Perfect vertical alignment
+- left: '50%'                   // Perfect horizontal center  
+- width: '17.5%'                // Optimal width without overlapping sides
+- height: '15.84%'              // Full coverage without black bars
+- transform: 'translate(-50%, -50%)'  // Perfect centering
+- Phone container: 1360px × 1020px (170% scale)
+
+These values were fine-tuned through multiple iterations and work perfectly.
+If the forest background requires different positioning, adjust the values above 
+but keep these original values commented for easy rollback.
+
+BACKGROUND FILES:
+- Original: /images/nokia-frame.png (preserved)  
+- Forest: /images/nokia-forest.png (new)
+*/
 
 export default App;
