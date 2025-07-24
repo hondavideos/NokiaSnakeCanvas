@@ -9,7 +9,7 @@ function App() {
   // Change this flag to switch between backgrounds:
   // true  = New forest-covered Nokia background
   // false = Original plain Nokia frame
-  const useForestBackground = true;
+  const useForestBackground = false;
   
   // Background image paths
   const backgroundImages = {
