@@ -104,7 +104,11 @@ const SnakeGame: React.FC<SnakeGameProps> = ({
     
     // Detect if we're on a touch device
     const detectTouch = () => {
-      setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
+      setIsTouchDevice(
+        'ontouchstart' in window ||
+        navigator.maxTouchPoints > 0 ||
+        window.matchMedia('(pointer: coarse)').matches
+      );
     };
     
     detectTouch();
@@ -476,12 +480,48 @@ const SnakeGame: React.FC<SnakeGameProps> = ({
       
       {isTouchDevice && (
         <div className="touch-controls">
-          <button className="touch-control up" onTouchStart={() => direction !== 'down' && setDirection('up')}>↑</button>
+          <button
+            className="touch-control up"
+            onTouchStart={() => {
+              if (snake.length === 0) startGame();
+              else if (gameOver) resetGame();
+              if (direction !== 'down') setDirection('up');
+            }}
+          >
+            ↑
+          </button>
           <div className="touch-controls-middle">
-            <button className="touch-control left" onTouchStart={() => direction !== 'right' && setDirection('left')}>←</button>
-            <button className="touch-control right" onTouchStart={() => direction !== 'left' && setDirection('right')}>→</button>
+            <button
+              className="touch-control left"
+              onTouchStart={() => {
+                if (snake.length === 0) startGame();
+                else if (gameOver) resetGame();
+                if (direction !== 'right') setDirection('left');
+              }}
+            >
+              ←
+            </button>
+            <button
+              className="touch-control right"
+              onTouchStart={() => {
+                if (snake.length === 0) startGame();
+                else if (gameOver) resetGame();
+                if (direction !== 'left') setDirection('right');
+              }}
+            >
+              →
+            </button>
           </div>
-          <button className="touch-control down" onTouchStart={() => direction !== 'up' && setDirection('down')}>↓</button>
+          <button
+            className="touch-control down"
+            onTouchStart={() => {
+              if (snake.length === 0) startGame();
+              else if (gameOver) resetGame();
+              if (direction !== 'up') setDirection('down');
+            }}
+          >
+            ↓
+          </button>
         </div>
       )}
     </div>
