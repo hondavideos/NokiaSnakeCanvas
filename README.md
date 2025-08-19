@@ -1,7 +1,8 @@
 <img width="828" height="830" alt="image" src="https://github.com/user-attachments/assets/f8a1dca1-92c9-4582-9679-c5a36304a576" />
+
 # Nokia Snake Game (Snakia)
 
-A modern implementation of the classic Nokia Snake game, built with React, TypeScript, and HTML5 Canvas.
+A modern implementation and working version of the classic Nokia Snake game, built with React, TypeScript, and HTML5 Canvas. Try it here: https://snakia.up.railway.app/
 
 ## Features
 
